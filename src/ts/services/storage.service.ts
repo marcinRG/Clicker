@@ -20,7 +20,7 @@ class StorageService {
     }
 
     public read(): Promise<string> {
-        return new Promise((resolve,reject) => {
+        return new Promise((resolve, reject) => {
             const val = this.storage.readValue(this.appKey);
             if (val) {
                 resolve(val);

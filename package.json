@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node ./node_modules/gulp/bin/gulp test-run",
-    "run" : "node ./node_modules/gulp/bin/gulp run-dist"
+    "run": "node ./node_modules/gulp/bin/gulp run-dist"
   },
   "repository": {
     "type": "git",
@@ -52,10 +52,11 @@
     "typescript": "^2.3.4",
     "vinyl-source-stream": "^1.1.0"
   },
-  "homepage": "https://github.com/marcinRG/markdownEditor#readme",
+  "homepage": "https://github.com/marcinRG/Clicker#readme",
   "dependencies": {
     "@types/bluebird": "^3.5.18",
     "bluebird": "^3.5.1",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "rxjs": "^5.5.5"
   }
 }
