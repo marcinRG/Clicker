@@ -44,7 +44,7 @@ gulp.task('sass-compile', ['lint-sass'], function () {
         .pipe(gulp.dest(settings.app.cssStyles));
 });
 
-gulp.task('browserify-compil', ['code-check'], function () {
+gulp.task('browserify-compil', [], function () {
     return browserify({
         entries: [settings.app.tsFile],
         debug: true

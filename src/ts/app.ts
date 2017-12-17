@@ -1,75 +1,23 @@
-// import {Observable} from 'rxjs/Observable';
-// import 'rxjs/add/observable/fromEvent';
-// import 'rxjs/add/observable/interval';
-// import {Observer} from 'rxjs/Observer';
-//
-// const button = document.querySelector('.button');
-// Observable.fromEvent(button, 'click')
-//     .subscribe(() => console.log('Clicked!'));
-// const observable = Observable.interval(1000);
-//
-// const source = Observable.create((observer) => {
-//     console.log(observable);
-//     observable.subscribe((val) => {
-//         console.log(val);
-//         observer.next({
-//             number: val,
-//             name: '1sec',
-//         });
-//         if (val % 5 === 0) {
-//             observer.next({
-//                 number: val,
-//                 name: '5sec',
-//             });
-//         }
-//         if (val % 10 === 0) {
-//             observer.next({
-//                 number: val,
-//                 name: '10sec',
-//             });
-//         }
-//     });
-// });
-//
-// class MyObserver implements Observer<any> {
-//     public next(value: any) {
-//         console.log(value);
-//         if (value.name) {
-//             console.log(value.name);
-//         }
-//     }
-//
-//     public error(err: any) {
-//         console.log('error ocurred' + err);
-//     }
-//
-//     public complete() {
-//         console.log('completed');
-//     }
-// }
-//
-// source.subscribe(new MyObserver());
+import {GeneratorComponent} from './utils/GeneratorComponent/GeneratorComponent';
+import {Timer} from './utils/Timer';
+import {VaultComponent} from './utils/VaultComponent';
+import {ClickComponent} from './utils/ClickComponent';
 
-//import {Timer} from './utils/Timer';
-//import {Observer} from 'rxjs/Observer';
+const timer = new Timer();
+const vault = new VaultComponent('.vault');
 
-//console.log('start');
-//const timer = new Timer();
-// class MyObserver implements Observer<any> {
-//     public next(value: any) {
-//         console.log('next');
-//         console.log(value);
-//         // console.log(value.eventType);
-//         // console.log(value.value);
-//     }
-//
-//     public error(err: any) {
-//         console.log('error ocurred' + err);
-//     }
-//
-//     public complete() {
-//         console.log('completed');
-//     }
-// }
-//
-// timer.subscribe(new MyObserver());
+const click = new ClickComponent('.clicker');
+vault.addSource(click);
+
+const generatorContainer = document.querySelector('.generators-container');
+
+const cursorComponent = new GeneratorComponent('cursor', 20, 1);
+cursorComponent.addVault(vault);
+cursorComponent.addTimer(timer);
+
+const grandpaComponent = new GeneratorComponent('granpa', 100, 20);
+grandpaComponent.addVault(vault);
+grandpaComponent.addTimer(timer);
+
+generatorContainer.appendChild(cursorComponent.getHtmlElement());
+generatorContainer.appendChild(grandpaComponent.getHtmlElement());

@@ -1,7 +1,7 @@
 export class Vault {
 
     constructor(private value: number = 0) {
-    };
+    }
 
     public add(amount: number) {
         const newValue = this.value + amount;
@@ -10,5 +10,9 @@ export class Vault {
         } else {
             this.value = 0;
         }
+    }
+
+    public getValue(): number {
+        return this.value;
     }
 }

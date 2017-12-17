@@ -1,0 +1,88 @@
+@import 'common';
+
+.app {
+  width: 75%;
+  margin: 0 auto;
+}
+
+.vault {
+  width: 100%;
+  margin: 0 auto;
+  font-size: 2em;
+  text-align: center;
+  padding: 1em 0;
+  background-color: #0074d9;
+}
+
+.row {
+  width: 100%;
+  overflow: hidden;
+
+  &::after {
+    clear: both;
+  }
+}
+
+.clicker-container {
+  width: 50%;
+  float: left;
+  height: 30em;
+  background-color: greenyellow;
+  position: relative;
+
+  .clicker {
+    position: absolute;
+    background-color: #060;
+    text-align: center;
+    color: white;
+    font-size: 3.5em;
+    padding: 2em 0;
+    width: 50%;
+    top: 25%;
+    left: 25%;
+  }
+}
+
+.generators-container {
+  display: block;
+  width: 50%;
+  margin: 0 auto;
+  float: right;
+  background-color: #c21f39;
+
+  .generator {
+    display: block;
+    width: 100%;
+    background-color: #f6c6ce;
+
+    .name {
+      display: inline-block;
+      width: 100%;
+
+      &::before {
+        content: 'name:';
+        display: inline-block;
+      }
+    }
+
+    .price {
+      display: inline-block;
+      width: 100%;
+
+      &::before {
+        content: 'price:';
+        display: inline-block;
+      }
+    }
+
+    .quantity {
+      display: inline-block;
+      width: 100%;
+
+      &::before {
+        content: 'quantity:';
+        display: inline-block;
+      }
+    }
+  }
+}

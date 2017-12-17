@@ -1,0 +1,7 @@
+@import 'mixins';
+
+*,
+html,
+body {
+  @include set-to-zero;
+}
