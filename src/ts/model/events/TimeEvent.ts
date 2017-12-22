@@ -1,6 +1,7 @@
-import {TimerEventTypes} from '../enums/TimerEventTypes';
+
+const timeEventName: string = 'timeEvent';
 
 export class TimeEvent {
-    constructor(public eventType: TimerEventTypes, public value: number) {
+    constructor(public value: number, public eventType: string = timeEventName) {
     }
 }

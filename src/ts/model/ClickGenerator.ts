@@ -1,11 +1,21 @@
+import {IMathFunctions} from './interfaces/IMathFunctions';
+
 export class ClickGenerator {
 
-    private quantity: number = 0;
     private visible: boolean = false;
     private enabled: boolean = false;
-    private sumGenerated: number = 0;
+    private mathUtils: IMathFunctions;
 
-    constructor(private name: string, private price: number, private amount: number) {
+    constructor(private name: string, private price: number, private amount: number,
+                private quantity: number = 0, private frequency: number = 1, private sumGenerated: number = 0) {
+    }
+
+    public setMathUtils(mathUtils: IMathFunctions) {
+        this.mathUtils = mathUtils;
+    }
+
+    public getFrequency() {
+        return this.frequency;
     }
 
     public getQuantity(): number {
@@ -23,7 +33,7 @@ export class ClickGenerator {
     public increaseQuantityByOne(): number {
         this.quantity = this.quantity + 1;
         const oldPrice = this.price;
-        const newPrice = changePrice(this.quantity, this.price);
+        const newPrice = this.calculateNewPrice();
         if (newPrice) {
             this.price = newPrice;
             return oldPrice;
@@ -39,8 +49,14 @@ export class ClickGenerator {
         return this.name;
     }
 
+    public getClicksPerSecond() {
+        if (this.mathUtils) {
+            return this.mathUtils.calculateProductionPerSec(this.amount, this.quantity, this.frequency);
+        }
+    }
+
     public getClicks(): number {
-        const clicks = Math.round(this.amount * this.quantity);
+        const clicks = this.calculateClicks();
         this.sumGenerated = this.sumGenerated + clicks;
         return clicks;
     }
@@ -62,11 +78,17 @@ export class ClickGenerator {
         return this.sumGenerated;
     }
 
-}
-
-const changePrice = (quantity, price) => {
-    if (quantity > 0 && price > 0) {
-        return Math.round(price * (1 + (quantity - 1) * 0.2));
+    private calculateNewPrice() {
+        if (this.mathUtils) {
+            return this.mathUtils.calculateNextPrice(this.quantity, this.price);
+        }
+        return 0;
     }
-    return -1;
-};
+
+    private calculateClicks() {
+        if (this.mathUtils) {
+            return this.mathUtils.calculateProduction(this.quantity, this.amount);
+        }
+        return 0;
+    }
+}

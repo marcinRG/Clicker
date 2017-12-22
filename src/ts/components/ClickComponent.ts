@@ -2,8 +2,11 @@ import {Observable} from 'rxjs/Observable';
 import {MoneyEvent} from '../model/events/MoneyEvent';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/fromEvent';
+import {Observer} from 'rxjs/Observer';
+import {ISubscribe} from '../model/interfaces/ISubscribe';
 
-export class ClickComponent {
+export class ClickComponent implements ISubscribe<MoneyEvent> {
+
     private htmlElement: HTMLElement;
     private clickSource: Observable<MoneyEvent>;
 
@@ -18,7 +21,11 @@ export class ClickComponent {
         }
     }
 
-    public subscribe(obj) {
-        this.clickSource.subscribe(obj);
+    public getObservable(): Observable<MoneyEvent> {
+        return this.clickSource;
+    }
+
+    public subscribe(observer: Observer<MoneyEvent>) {
+        this.clickSource.subscribe(observer);
     }
 }
