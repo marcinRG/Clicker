@@ -6,7 +6,7 @@ import {MoneyEvent} from '../model/events/MoneyEvent';
 
 export const filterTimeEvents = (observable: Observable<TimeEvent>, frequency: number) => {
     return observable.filter((timeEvent: TimeEvent) => {
-        return (timeEvent.value % frequency) === 0;
+        return (timeEvent.value > 0) && ((timeEvent.value % frequency) === 0);
     });
 };
 

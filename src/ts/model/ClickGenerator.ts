@@ -78,6 +78,17 @@ export class ClickGenerator {
         return this.sumGenerated;
     }
 
+    public dumpProperties() {
+        return {
+            name: this.name,
+            price: this.price,
+            amount: this.amount,
+            quantity: this.quantity,
+            frequency: this.frequency,
+            sumGenerated: this.sumGenerated
+        }
+    }
+
     private calculateNewPrice() {
         if (this.mathUtils) {
             return this.mathUtils.calculateNextPrice(this.quantity, this.price);

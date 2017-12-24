@@ -1,11 +1,11 @@
 import {IMathFunctions} from '../model/interfaces/IMathFunctions';
-import {Timer} from './Timer';
 import {GeneratorComponent} from './GeneratorComponent/GeneratorComponent';
 import {VaultComponent} from './VaultComponent';
 import {PropertyChangeEvent} from '../model/events/PropertyChangeEvent';
 import {Observer} from 'rxjs/Observer';
 import {Subject} from 'rxjs/Subject';
 import {createObserver} from '../utils/RxUtils';
+import {Timer} from '../services/timer.service';
 
 export class GeneratorComponentCollection {
 
@@ -64,6 +64,14 @@ export class GeneratorComponentCollection {
             this.addToHTML(generatorComponent.getHtmlElement());
             this.generatorsArray.push(generatorComponent);
         }
+    }
+
+    public dumpProperties() {
+        let array = [];
+        for (const elem of this.generatorsArray) {
+            array.push(elem.dumpProperties());
+        }
+        return array;
     }
 
     private calculateGeneratedPerSecond(): number {

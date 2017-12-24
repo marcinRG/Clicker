@@ -1,9 +1,9 @@
+import {ISubscribe} from '../model/interfaces/ISubscribe';
 import {Observable} from 'rxjs/Observable';
+import {Observer} from 'rxjs/Observer';
+import {TimeEvent} from '../model/events/TimeEvent';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/interval';
-import {TimeEvent} from '../model/events/TimeEvent';
-import {Observer} from 'rxjs/Observer';
-import {ISubscribe} from '../model/interfaces/ISubscribe';
 
 export class Timer implements ISubscribe<TimeEvent> {
     private timeGenerator: Observable<TimeEvent>;
@@ -23,3 +23,5 @@ export class Timer implements ISubscribe<TimeEvent> {
         this.timeGenerator.subscribe(observer);
     }
 }
+
+export const timerService: Timer = new Timer();

@@ -6,7 +6,7 @@ import {ISubscribe} from '../../model/interfaces/ISubscribe';
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 import {VaultComponent} from '../VaultComponent';
-import {Timer} from '../Timer';
+import {Timer} from '../../services/timer.service';
 
 export class GeneratorComponent implements ISubscribe<any> {
     private generatorHTMLElement: GeneratorHTMLElement;
@@ -49,6 +49,12 @@ export class GeneratorComponent implements ISubscribe<any> {
 
     public getObservable(): Observable<any> {
         return this.subject;
+    }
+
+    public dumpProperties() {
+        let obj = this.getClickGenerator().dumpProperties();
+        obj['className'] = this.generatorHTMLElement.getClassName();
+        return obj;
     }
 
 }

@@ -55,8 +55,10 @@
   "homepage": "https://github.com/marcinRG/Clicker#readme",
   "dependencies": {
     "@types/bluebird": "^3.5.18",
+    "@types/localforage": "0.0.34",
     "bluebird": "^3.5.1",
     "express": "^4.16.2",
+    "localforage": "^1.5.5",
     "rxjs": "^5.5.5"
   }
 }

@@ -10,7 +10,7 @@ import {addTextToChild, createSpan} from '../utils/HTMLManipulationUtils';
 
 export class VaultComponent implements ISubscribe<MoneyEvent> {
     private htmlElem: Element;
-    private vault: Vault = new Vault();
+    private vault: Vault;
     private moneyEventObserver: Observer<MoneyEvent>;
     private propertyEventObserver: Observer<PropertyChangeEvent<any>>;
     private subject: Subject<any> = new Subject<any>();
@@ -30,10 +30,12 @@ export class VaultComponent implements ISubscribe<MoneyEvent> {
         if (propertyEvent instanceof PropertyChangeEvent
             && propertyEvent.propertyName === 'clicksPerSecond') {
             addTextToChild('.per-second', propertyEvent.value + '', <HTMLElement>this.htmlElem);
+            this.vault.setGeneratedPerSecond(propertyEvent.value);
         }
     };
 
-    constructor(elemQueryStr: string) {
+    constructor(elemQueryStr: string, value: number = 0, totalSum: number = 0, generatedPerSecond: number = 0) {
+        this.vault = new Vault(value, totalSum, generatedPerSecond);
         const elem = document.querySelector(elemQueryStr);
         if (elem) {
             this.htmlElem = elem;
@@ -54,6 +56,10 @@ export class VaultComponent implements ISubscribe<MoneyEvent> {
     public addMoneySource(obj: ISubscribe<MoneyEvent>) {
         const observable: Observable<MoneyEvent> = obj.getObservable();
         filterMoneyEvents(observable).subscribe(this.moneyEventObserver);
+    }
+
+    public dumpProperties() {
+        return this.vault.dumpProperties();
     }
 
     public getObservable(): Observable<MoneyEvent> {

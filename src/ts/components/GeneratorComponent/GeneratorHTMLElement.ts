@@ -26,14 +26,18 @@ export class GeneratorHTMLElement implements ISubscribe<any> {
         }
     };
 
-    constructor(name: string, price: number, quantity: number, className: string) {
-        const elem = createGeneratorElem(name, price, quantity, className);
+    constructor(name: string, price: number, quantity: number, private className: string) {
+        const elem = createGeneratorElem(name, price, quantity, this.className);
         if (elem) {
             this.htmlElement = elem;
             this.createMouseClickObservable().subscribe(this.subject);
             this.propertyChangeEventObserver = createObserver(this.nextPropertyChange,
                 'error in GeneratorHTMLElement, propertyChangeEventObserver creator');
         }
+    }
+
+    public getClassName() {
+        return this.className;
     }
 
     public getHTMLElement() {

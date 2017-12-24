@@ -26,4 +26,12 @@ export class Vault {
     public getValue(): number {
         return this.value;
     }
+
+    public dumpProperties() {
+        return {
+            value: this.value,
+            totalSum: this.totalSum,
+            generatedPerSecond: this.generatedPerSecond
+        }
+    }
 }
