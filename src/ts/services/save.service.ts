@@ -7,6 +7,7 @@ import {TimeEvent} from '../model/events/TimeEvent';
 import {Observer} from 'rxjs/Observer';
 import {storageService} from './storage.service';
 import {timerService} from './timer.service';
+import * as Noty from 'noty';
 
 class SaveService {
 
@@ -19,7 +20,9 @@ class SaveService {
             if ((this.vault && this.vault.dumpProperties) &&
                 (this.generatorCollection && this.generatorCollection.dumpProperties)) {
                 storageService.save(this.vault, this.generatorCollection).then(() => {
-                    console.log('saved to local storage');
+                    new Noty({
+                        text: 'Saved to local storage',
+                    }).show();
                 }, () => {
                     console.log('error occured while saving to localstorage');
                 });
