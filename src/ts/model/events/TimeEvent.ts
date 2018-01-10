@@ -1,4 +1,3 @@
-
 const timeEventName: string = 'timeEvent';
 
 export class TimeEvent {

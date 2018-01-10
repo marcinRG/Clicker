@@ -13,13 +13,12 @@
   padding: 1em 0;
   background-color: #0074d9;
 
-  span {
+  .value,
+  .per-second {
     display: block;
     width: 100%;
   }
 }
-
-
 
 .row {
   width: 100%;

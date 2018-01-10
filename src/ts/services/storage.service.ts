@@ -1,6 +1,6 @@
 import * as Promise from 'bluebird';
 import {AppSettings} from '../settings/AppSettings';
-import * as localForage from "localforage";
+import * as localForage from 'localforage';
 import {VaultComponent} from '../components/VaultComponent';
 import {GeneratorComponentCollection} from '../components/GeneratorComponentCollection';
 
@@ -17,20 +17,20 @@ class StorageService {
         });
     }
 
-    private readVault(): Promise<any> {
-        return Promise.resolve(localForage.getItem('vault'));
-    }
-
-    private readCollection(): Promise<any> {
-        return Promise.resolve(localForage.getItem('collection'));
-    }
-
     public read(): Promise<any> {
         return Promise.all([this.readVault(), this.readCollection()]);
     }
 
     public save(vault: VaultComponent, generatorCollection: GeneratorComponentCollection): Promise<any> {
         return Promise.all([this.saveVault(vault), this.saveCollection(generatorCollection)]);
+    }
+
+    private readVault(): Promise<any> {
+        return Promise.resolve(localForage.getItem('vault'));
+    }
+
+    private readCollection(): Promise<any> {
+        return Promise.resolve(localForage.getItem('collection'));
     }
 
     private saveVault(vault: VaultComponent): Promise<any> {

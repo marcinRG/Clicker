@@ -17,13 +17,23 @@ generatorCollection.setMathUtils(mathUtilsService);
 storageService.config().then(() => {
     return storageService.read();
 }).then((val) => {
-    const {value, totalSum, generatedPerSecond} = val[0];
-    vault = new VaultComponent('.vault', value, totalSum, generatedPerSecond);
+    console.log('succes');
+    if (val[0]) {
+        const {value, totalSum, generatedPerSecond} = val[0];
+        vault = new VaultComponent('.vault', value, totalSum, generatedPerSecond);
+    } else {
+        vault = new VaultComponent('.vault');
+    }
     generatorCollection.setVault(vault);
-    addGeneratorCollection(val[1], generatorCollection);
+    if (val[1]) {
+        addGeneratorCollection(val[1], generatorCollection);
+    } else {
+        generatorCollectionDefaultValues();
+    }
     vault.addMoneySource(click);
     initializeSaveService(vault, generatorCollection);
 }, () => {
+    console.log('failure');
     initializeWithDefault();
     initializeSaveService(vault, generatorCollection);
 });
@@ -45,6 +55,10 @@ const initializeWithDefault = () => {
     vault = new VaultComponent('.vault');
     vault.addMoneySource(click);
     generatorCollection.setVault(vault);
+    generatorCollectionDefaultValues();
+};
+
+const generatorCollectionDefaultValues = () => {
     generatorCollection.addComponent(new GeneratorComponent('artificial arm', 20, 1, 0,
         10, 0, 'arm'));
     generatorCollection.addComponent(new GeneratorComponent('robot', 100, 1, 0,

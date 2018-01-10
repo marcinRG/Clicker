@@ -2,7 +2,6 @@
 // import {Observable} from 'rxjs/Observable';
 // import 'rxjs/add/observable/from';
 
-
 xdescribe('ClickComponent object tests', () => {
     it('should be defined', () => {
         // console.log('Object should be defined');
