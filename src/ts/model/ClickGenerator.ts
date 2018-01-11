@@ -86,7 +86,7 @@ export class ClickGenerator {
             quantity: this.quantity,
             frequency: this.frequency,
             sumGenerated: this.sumGenerated
-        }
+        };
     }
 
     private calculateNewPrice() {

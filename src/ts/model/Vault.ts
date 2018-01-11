@@ -32,6 +32,6 @@ export class Vault {
             value: this.value,
             totalSum: this.totalSum,
             generatedPerSecond: this.generatedPerSecond
-        }
+        };
     }
 }

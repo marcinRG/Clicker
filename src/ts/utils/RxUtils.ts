@@ -18,14 +18,14 @@ export const filterMoneyEvents = (observable: Observable<MoneyEvent>) => {
 
 export const createObserver = <E>(next: (e: E) => void, errorMsg: string): Observer<E> => {
     const obj: Observer<E> = {
-        next: next,
+        next,
         error: (e) => {
             console.log(errorMsg);
             console.log(e);
         },
         complete: () => {
             console.log('completed');
-        }
+        },
     };
     return obj;
 };
