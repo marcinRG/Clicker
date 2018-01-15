@@ -58,42 +58,32 @@
 //     generatorCollectionDefaultValues();
 // };
 //
-// const generatorCollectionDefaultValues = () => {
-//     generatorCollection.addComponent(new GeneratorComponent('artificial arm', 20, 1, 0,
-//         10, 0, 'arm'));
-//     generatorCollection.addComponent(new GeneratorComponent('robot', 100, 1, 0,
-//         1, 0, 'robot'));
-//     generatorCollection.addComponent(new GeneratorComponent('assembly line', 1100, 8, 0,
-//         1, 0, 'assembly'));
-//     generatorCollection.addComponent(new GeneratorComponent('fission reactor', 12000, 47, 0,
-//         1, 0, 'reactor'));
-//     generatorCollection.addComponent(new GeneratorComponent('tokamak', 130000, 260, 0,
-//         1, 0, 'tokamak'));
-// };
 
-import {VaultNewComponent} from './components/VaultComponent';
-import {Observer} from 'rxjs/Observer';
-import {TimerNew} from './components/Timer';
-import {Observable} from 'rxjs/Observable';
-import {ChangeEvent} from './model/event/ChangeEvent';
+import {Timer} from './components/Timer';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/map';
-import {MoneyChangeEvent} from './model/event/MoneyChangeEvent';
+import {ClickComponent} from './components/ClickComponent';
+import {GeneratorComponentCollection} from './components/GeneratorComponentCollection';
+import {VaultComponent} from './components/VaultComponent';
+import {mathUtilsService} from './services/mathUtils.service';
+import {GeneratorComponent} from './components/GeneratorComponent/GeneratorComponent';
+import {Observer} from 'rxjs/Observer';
 
 console.log('app start');
-//const timer = new TimerNew();
-const observable = Observable.create((observer) => {
-    observer.next(new ChangeEvent<number>('ClicksPerSecond', 25));
-    observer.next(new ChangeEvent<number>('ClicksPerSecond', 37));
-    observer.next(new ChangeEvent<number>('ClicksPerSecond', 49));
-});
-
-const observable2: Observable<any> = Observable.from([0, 1, 2, 3, 4, 5])
-    .map((val) => {
-        return new MoneyChangeEvent(val);
-    });
-const vaultNew = new VaultNewComponent('.vault');
-
+//const timer = new Timer();
+const click: ClickComponent = new ClickComponent('.clicker');
+// const obs: Observer<any> = {
+//     next: (value: any) => {
+//         this.generatorEventWrapper.next(value);
+//         this.generatorHTMLElement.next(value);
+//     },
+//     error: (err: any) => {
+//         console.log('error' + err);
+//     },
+//     complete: () => {
+//         console.log('completed');
+//     },
+// };
 const observer2: Observer<any> = {
     next: (val) => {
         console.log('recived ob2');
@@ -104,9 +94,26 @@ const observer2: Observer<any> = {
     complete: () => console.log('o2 completed'),
 
 };
-console.log('start');
-observable2.subscribe(vaultNew);
-observable.subscribe(vaultNew);
-vaultNew.subscribe(observer2);
 
-console.log('end');
+click.subscribe(observer2);
+//const generatorCollection: GeneratorComponentCollection = new GeneratorComponentCollection('.generators-container');
+//const vault = new VaultComponent('.vault');
+//click.subscribe(vault);
+//generatorCollection.setTimer(timer);
+//generatorCollection.setMathUtils(mathUtilsService);
+//generatorCollection.setVault(vault);
+//generatorCollectionDefaultValues(generatorCollection);
+console.log('app end');
+
+// function generatorCollectionDefaultValues(generatorCollection: GeneratorComponentCollection) {
+//     generatorCollection.addComponent(new GeneratorComponent('artificial arm', 20, 1, 0,
+//         10, 0, 'arm'));
+//     /*    generatorCollection.addComponent(new GeneratorComponent('robot', 100, 1, 0,
+//             1, 0, 'robot'));
+//         generatorCollection.addComponent(new GeneratorComponent('assembly line', 1100, 8, 0,
+//             1, 0, 'assembly'));
+//         generatorCollection.addComponent(new GeneratorComponent('fission reactor', 12000, 47, 0,
+//             1, 0, 'reactor'));
+//         generatorCollection.addComponent(new GeneratorComponent('tokamak', 130000, 260, 0,
+//             1, 0, 'tokamak'));*/
+// }

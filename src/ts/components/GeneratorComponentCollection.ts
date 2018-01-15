@@ -1,20 +1,17 @@
-import {IMathFunctions} from '../../../ts/model/interfaces/IMathFunctions';
 import {GeneratorComponent} from './GeneratorComponent/GeneratorComponent';
+import {IMathFunctions} from '../model/interfaces/IMathFunctions';
+import {Timer} from './Timer';
 import {VaultComponent} from './VaultComponent';
-import {PropertyChangeEvent} from '../../model/events/PropertyChangeEvent';
 import {Observer} from 'rxjs/Observer';
+import {ChangeEvent} from '../model/events/ChangeEvent';
 import {Subject} from 'rxjs/Subject';
-import {createObserver} from '../../../ts/utils/RxUtils';
-import {Timer} from '../../services/old/timer.service';
 
-export class GeneratorComponentCollection {
-
+export class GeneratorComponentCollection implements Observer<any> {
+    private generatorsArray: GeneratorComponent[] = [];
+    private htmlElement: HTMLElement;
     private mathUtils: IMathFunctions;
     private timer: Timer;
     private vault: VaultComponent;
-    private generatorsArray: GeneratorComponent[] = [];
-    private htmlElement: HTMLElement;
-    private propertyChangeEventObserver: Observer<PropertyChangeEvent<any>>;
     private subject: Subject<any> = new Subject<any>();
 
     constructor(elemQueryStr: string) {
@@ -22,9 +19,18 @@ export class GeneratorComponentCollection {
         if (elem) {
             this.htmlElement = elem;
         }
+    }
 
-        this.propertyChangeEventObserver = createObserver(this.nextPropertyChangeEvent,
-            'error in GeneratorComponentCollection, propertyChangeEventObserver creator');
+    public next(value: any) {
+        this.handleChangeEvent(value);
+    }
+
+    public error(err: any) {
+        console.log('error' + err);
+    }
+
+    public complete() {
+        console.log('completed');
     }
 
     public setMathUtils(mathUtils: IMathFunctions) {
@@ -42,36 +48,28 @@ export class GeneratorComponentCollection {
     public setVault(vault: VaultComponent) {
         if (vault) {
             this.vault = vault;
-            vault.addPropertySource(this.subject);
         }
     }
 
     public addComponent(generatorComponent: GeneratorComponent) {
         if (generatorComponent) {
             generatorComponent.setMathUtils(this.mathUtils);
-            generatorComponent.addVault(this.vault);
-            generatorComponent.addTimer(this.timer);
-            generatorComponent.subscribe(this.propertyChangeEventObserver);
+            subscribeIfExist(this.vault, generatorComponent);
+            subscribeIfExist(this.timer, generatorComponent);
+            subscribeIfExist(generatorComponent, this.vault);
+            subscribeIfExist(generatorComponent, this);
             this.addToHTML(generatorComponent.getHtmlElement());
             this.generatorsArray.push(generatorComponent);
         }
     }
 
-    public dumpProperties() {
-        const array = [];
-        for (const elem of this.generatorsArray) {
-            array.push(elem.dumpProperties());
-        }
-        return array;
-    }
-    private nextPropertyChangeEvent = (event: PropertyChangeEvent<any>) => {
-        if (event) {
-            if (event instanceof PropertyChangeEvent && event.propertyName === 'genPerSec') {
-                this.subject.next(new PropertyChangeEvent('clicksPerSecond',
-                    this.calculateGeneratedPerSecond()));
-            }
+    private handleChangeEvent(event: ChangeEvent<any>) {
+        if (event && event.propertyName === 'GenPerSec') {
+            this.subject.next(new ChangeEvent('GenPerSecAll',
+                this.calculateGeneratedPerSecond()));
         }
     }
+
     private calculateGeneratedPerSecond(): number {
         let sum = 0;
         for (const elem of this.generatorsArray) {
@@ -84,3 +82,9 @@ export class GeneratorComponentCollection {
         this.htmlElement.appendChild(element);
     }
 }
+
+const subscribeIfExist = (subscibable: any, observer: Observer<any>) => {
+    if (subscibable && subscibable.subscribe && observer) {
+        subscibable.subscribe(observer);
+    }
+};

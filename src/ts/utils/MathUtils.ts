@@ -2,7 +2,7 @@ import {IMathFunctions} from '../model/interfaces/IMathFunctions';
 
 export class MathUtils implements IMathFunctions {
 
-    calculateProduction(amount: number, quantity: number): number {
+    public calculateProduction(amount: number, quantity: number): number {
         return Math.round(amount * quantity);
     }
 

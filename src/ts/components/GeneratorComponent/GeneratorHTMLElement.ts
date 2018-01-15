@@ -6,6 +6,7 @@ import {Observer} from 'rxjs/Observer';
 import {Subject} from 'rxjs/Subject';
 import {ChangeEvent} from '../../model/events/ChangeEvent';
 import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
 
 export class GeneratorHTMLElement implements Observer<any> {
     private htmlElement: HTMLElement;
@@ -22,7 +23,13 @@ export class GeneratorHTMLElement implements Observer<any> {
     }
 
     public next(value: any) {
-        console.log('next');
+        if (value) {
+            this.handleClick(value);
+            this.handlePriceChange(value);
+            this.handleEnabledChange(value);
+            this.handleQuantityChange(value);
+            this.handleVisibleChange(value);
+        }
     }
 
     public error(err: any) {
@@ -47,43 +54,50 @@ export class GeneratorHTMLElement implements Observer<any> {
 
     private createMouseClickObservable(): Observable<any> {
         return Observable.fromEvent(this.htmlElement, 'click').map((value) => {
-            if (!this.htmlElement.getAttribute('disabled')) {
-                return (new ChangeEvent<any>('click', this.htmlElement));
+            if (!this.htmlElement.hasAttribute('disabled')) {
+                return (new ChangeEvent<any>('Click', this.htmlElement));
             }
             return null;
         });
     }
 
+    private handleClick(changeEvent: ChangeEvent<any>) {
+        if (changeEvent.propertyName === 'Click') {
+            this.subject.next(changeEvent);
+        }
+    }
+
+    private handlePriceChange(changeEvent: ChangeEvent<boolean>) {
+        if (changeEvent.propertyName === 'Price') {
+            if (this.htmlElement) {
+                addTextToChild('.price', changeEvent.value + '', this.htmlElement);
+            }
+        }
+    }
+
+    private handleQuantityChange(changeEvent: ChangeEvent<number>) {
+        if (changeEvent.propertyName === 'Quantity') {
+            if (this.htmlElement) {
+                addTextToChild('.quantity', changeEvent.value + '', this.htmlElement);
+            }
+        }
+    }
+
+    private handleVisibleChange(changeEvent: ChangeEvent<boolean>) {
+        if (changeEvent.propertyName === 'Visible') {
+            console.log('visible event');
+            if (this.htmlElement) {
+                toggleVisibility(this.htmlElement, !changeEvent.value);
+            }
+        }
+    }
+
+    private handleEnabledChange(propertyChangeEvent: ChangeEvent<boolean>) {
+        if (propertyChangeEvent.propertyName === 'Enabled') {
+            console.log('property change Enabled');
+            if (this.htmlElement) {
+               toggleDisability(this.htmlElement, propertyChangeEvent.value);
+            }
+        }
+    }
 }
-
-const handlePriceChange = (propertyChangeEvent: ChangeEvent<boolean>, elem: HTMLElement) => {
-    if (propertyChangeEvent.propertyName === 'price') {
-        if (elem) {
-            addTextToChild('.price', propertyChangeEvent.value + '', elem);
-        }
-    }
-};
-
-const handleQuantityChange = (propertyChangeEvent: ChangeEvent<number>, elem: HTMLElement) => {
-    if (propertyChangeEvent.propertyName === 'quantity') {
-        if (elem) {
-            addTextToChild('.quantity', propertyChangeEvent.value + '', elem);
-        }
-    }
-};
-
-const handleVisibleChange = (propertyChangeEvent: ChangeEvent<boolean>, elem: HTMLElement) => {
-    if (propertyChangeEvent.propertyName === 'visible') {
-        if (elem) {
-            toggleVisibility(elem, !propertyChangeEvent.value);
-        }
-    }
-};
-
-const handleEnabledChange = (propertyChangeEvent: ChangeEvent<boolean>, elem: HTMLElement) => {
-    if (propertyChangeEvent.propertyName === 'enabled') {
-        if (elem) {
-            toggleDisability(elem, !propertyChangeEvent.value);
-        }
-    }
-};

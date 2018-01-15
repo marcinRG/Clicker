@@ -16,7 +16,9 @@ export class ClickComponent {
         if (elem) {
             this.htmlElement = elem;
             this.clickSource = Observable.fromEvent(this.htmlElement, 'click').map(() => {
-                return (new MoneyChangeEvent(1));
+                console.log('clicker');
+                return null;
+                //return (new MoneyChangeEvent(1));
             });
         }
     }

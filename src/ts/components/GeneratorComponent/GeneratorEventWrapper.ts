@@ -4,6 +4,7 @@ import {ClickGenerator} from '../../model/ClickGenerator';
 import {TimeChangeEvent} from '../../model/events/TimeChangeEvent';
 import {MoneyChangeEvent} from '../../model/events/MoneyChangeEvent';
 import {ChangeEvent} from '../../model/events/ChangeEvent';
+import {IMathFunctions} from '../../model/interfaces/IMathFunctions';
 
 export class GeneratorEventWrapper implements Observer<any> {
     private clickGenerator: ClickGenerator;
@@ -19,8 +20,11 @@ export class GeneratorEventWrapper implements Observer<any> {
     }
 
     public next(value: any) {
-        this.handleTimeEvent(value);
-        this.handleMoneyEvent(value);
+        if (value) {
+            this.handleTimeEvent(value);
+            this.handleMoneyEvent(value);
+            this.handleClickEvent(value);
+        }
     }
 
     public error(err: any) {
@@ -31,37 +35,45 @@ export class GeneratorEventWrapper implements Observer<any> {
         console.log('complete');
     }
 
+    public subscribe(observer: Observer<any>) {
+        this.subject.subscribe(observer);
+    }
+
+    public addMathUtils(mathUtils: IMathFunctions) {
+        this.clickGenerator.setMathUtils(mathUtils);
+    }
+
     private handleTimeEvent(timeEvent: TimeChangeEvent) {
-        if (timeEvent && timeEvent instanceof TimeChangeEvent) {
-            if (this.clickGenerator.getQuantity() > 0) {
-                this.subject.next(new MoneyChangeEvent(this.clickGenerator.getClicks()));
-                this.subject.next(new ChangeEvent('Sum', this.clickGenerator.getSum()));
+        if (timeEvent instanceof TimeChangeEvent) {
+            if ((timeEvent.value % this.clickGenerator.getFrequency()) === 0) {
+                if (this.clickGenerator.getQuantity() > 0) {
+                    this.subject.next(new MoneyChangeEvent(this.clickGenerator.getClicks()));
+                    this.subject.next(new ChangeEvent('Sum', this.clickGenerator.getSum()));
+                }
             }
         }
     }
 
     private handleMoneyEvent(moneyEvent: MoneyChangeEvent) {
-        if (moneyEvent && moneyEvent instanceof MoneyChangeEvent) {
+        if (moneyEvent instanceof MoneyChangeEvent) {
             if (this.clickGenerator.canChangeVisible(moneyEvent.value)) {
                 this.clickGenerator.setVisible();
                 this.subject.next(new ChangeEvent<boolean>('Visible', this.clickGenerator.getVisible()));
             }
             if (this.clickGenerator.canChangeEnabled(moneyEvent.value)) {
                 const enabledState = this.clickGenerator.changeEnabled();
-                this.subject.next(new ChangeEvent<boolean>('enabled', enabledState));
+                this.subject.next(new ChangeEvent<boolean>('Enabled', enabledState));
             }
         }
     }
 
-    //
-    // private nextEvent = (e: Event<any>) => {
-    //     if (e && e.name === 'click') {
-    //         const oldPrice = this.clickGenerator.increaseQuantityByOne();
-    //         this.subject.next(new MoneyEvent(-1 * oldPrice));
-    //         this.subject.next(new PropertyChangeEvent('price', this.clickGenerator.getPrice()));
-    //         this.subject.next(new PropertyChangeEvent('quantity', this.clickGenerator.getQuantity()));
-    //         this.subject.next(new PropertyChangeEvent('genPerSec', this.clickGenerator.getClicksPerSecond()));
-    //     }
-    // };
-
+    private handleClickEvent(clickEvent: ChangeEvent<any>) {
+        if (clickEvent.propertyName === 'Click') {
+            const oldPrice = this.clickGenerator.increaseQuantityByOne();
+            this.subject.next(new MoneyChangeEvent(-1 * oldPrice));
+            this.subject.next(new ChangeEvent('Price', this.clickGenerator.getPrice()));
+            this.subject.next(new ChangeEvent('Quantity', this.clickGenerator.getQuantity()));
+            this.subject.next(new ChangeEvent('GenPerSec', this.clickGenerator.getClicksPerSecond()));
+        }
+    }
 }
