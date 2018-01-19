@@ -10,7 +10,7 @@ export class Timer {
     constructor() {
         const timeGenerator = Observable.interval(1000);
         this.timeGenerator = timeGenerator.map((value) => {
-            return new TimeChangeEvent();
+            return new TimeChangeEvent(value);
         });
     }
 

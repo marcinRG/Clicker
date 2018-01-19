@@ -70,50 +70,27 @@ import {GeneratorComponent} from './components/GeneratorComponent/GeneratorCompo
 import {Observer} from 'rxjs/Observer';
 
 console.log('app start');
-//const timer = new Timer();
+const timer = new Timer();
 const click: ClickComponent = new ClickComponent('.clicker');
-// const obs: Observer<any> = {
-//     next: (value: any) => {
-//         this.generatorEventWrapper.next(value);
-//         this.generatorHTMLElement.next(value);
-//     },
-//     error: (err: any) => {
-//         console.log('error' + err);
-//     },
-//     complete: () => {
-//         console.log('completed');
-//     },
-// };
-const observer2: Observer<any> = {
-    next: (val) => {
-        console.log('recived ob2');
-    },
-    error: (err) => {
-        console.error('ob2 error: ' + err);
-    },
-    complete: () => console.log('o2 completed'),
+const generatorCollection: GeneratorComponentCollection = new GeneratorComponentCollection('.generators-container');
+const vault = new VaultComponent('.vault');
+click.subscribe(vault);
+generatorCollection.setTimer(timer);
+generatorCollection.setMathUtils(mathUtilsService);
+generatorCollection.setVault(vault);
+generatorCollectionDefaultValues(generatorCollection);
 
-};
+function generatorCollectionDefaultValues(generatorCollection: GeneratorComponentCollection) {
+    generatorCollection.addComponent(new GeneratorComponent('artificial arm', 20, 1, 0,
+        10, 0, 'arm'));
+    generatorCollection.addComponent(new GeneratorComponent('robot', 100, 1, 0,
+        1, 0, 'robot'));
+    generatorCollection.addComponent(new GeneratorComponent('assembly line', 1100, 8, 0,
+        1, 0, 'assembly'));
+    generatorCollection.addComponent(new GeneratorComponent('fission reactor', 12000, 47, 0,
+        1, 0, 'reactor'));
+    generatorCollection.addComponent(new GeneratorComponent('tokamak', 130000, 260, 0,
+        1, 0, 'tokamak'));
+}
 
-click.subscribe(observer2);
-//const generatorCollection: GeneratorComponentCollection = new GeneratorComponentCollection('.generators-container');
-//const vault = new VaultComponent('.vault');
-//click.subscribe(vault);
-//generatorCollection.setTimer(timer);
-//generatorCollection.setMathUtils(mathUtilsService);
-//generatorCollection.setVault(vault);
-//generatorCollectionDefaultValues(generatorCollection);
 console.log('app end');
-
-// function generatorCollectionDefaultValues(generatorCollection: GeneratorComponentCollection) {
-//     generatorCollection.addComponent(new GeneratorComponent('artificial arm', 20, 1, 0,
-//         10, 0, 'arm'));
-//     /*    generatorCollection.addComponent(new GeneratorComponent('robot', 100, 1, 0,
-//             1, 0, 'robot'));
-//         generatorCollection.addComponent(new GeneratorComponent('assembly line', 1100, 8, 0,
-//             1, 0, 'assembly'));
-//         generatorCollection.addComponent(new GeneratorComponent('fission reactor', 12000, 47, 0,
-//             1, 0, 'reactor'));
-//         generatorCollection.addComponent(new GeneratorComponent('tokamak', 130000, 260, 0,
-//             1, 0, 'tokamak'));*/
-// }

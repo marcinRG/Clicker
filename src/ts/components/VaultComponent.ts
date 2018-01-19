@@ -47,7 +47,6 @@ export class VaultComponent implements Observer<any> {
 
     private handleMoneyEvent(moneyEvent: MoneyChangeEvent) {
         if (moneyEvent instanceof MoneyChangeEvent) {
-            console.log(moneyEvent);
             this.vault.add(moneyEvent.value);
             if (this.htmlElem) {
                 addTextToChild('.value', this.vault.getValue() + '', this.htmlElem);
@@ -59,7 +58,6 @@ export class VaultComponent implements Observer<any> {
     private handlePropertyChangeEvent(propertyEvent: ChangeEvent<any>) {
         if (propertyEvent instanceof ChangeEvent
             && propertyEvent.propertyName === 'ClicksPerSecond') {
-            console.log('property change');
             if (this.htmlElem) {
                 addTextToChild('.per-second', propertyEvent.value + '', this.htmlElem);
             }
