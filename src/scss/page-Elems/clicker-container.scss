@@ -1,0 +1,55 @@
+@import '../common';
+@import '../mixins';
+
+.clicker-container {
+  width: 50%;
+  float: left;
+  height: 100%;
+  background-color: $color2;
+  position: relative;
+  text-align: center;
+}
+
+.vault {
+  @include lobster-font;
+  width: 100%;
+  margin: 1.5em auto;
+  font-size: 2em;
+  padding: .5em 0;
+  color: $color2;
+  background-color: $color3;
+
+  .display {
+    @include block-border-box;
+    text-align: center;
+    margin: auto;
+    background-color: $color3;
+  }
+
+  .value {
+    @include before-elem($color4, 'clicks:', .3em);
+  }
+
+  .per-second {
+    @include before-elem($color4, 'clicks/sec:', .3em);
+  }
+}
+
+.svg-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: $color2;
+
+  circle {
+    stroke: $color3;
+  }
+}
+
+.svg-text {
+  @include lobster-font;
+  user-select: none;
+  fill: $color3;
+  font-size: 45px;
+}

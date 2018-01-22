@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Lobster|Overpass+Mono" rel="stylesheet">
     <title>Clicker</title>
     <!-- build:css css/style.css -->
     <!-- inject:css -->
@@ -14,25 +15,33 @@
 <body>
 <main>
     <section class="app">
-        <div class="vault">
-            <!--<span class="value">0</span>-->
-            <!--<span class="per-second">0.1</span>-->
-        </div>
-        <div class="row">
-            <div class="clicker-container">
-                <div class="clicker">Click Me!</div>
+        <div class="clicker-container">
+            <div class="vault">
+                <span class="display value">45690</span>
+                <span class="display per-second">0.1</span>
             </div>
-            <div class="generators-container">
-<!--                <div class="generator grandpa">
-                    <span class="name"></span>
-                    <span class="price"></span>
-                    <span class="quantity"></span>
-                </div>-->
+            <svg width="300" height="300" class="svg-img clicker">
+                <circle cx="150" cy="150" r="140" stroke-width="5" fill="none"/>
+                <circle cx="150" cy="150" r="134" stroke-width="2" fill="none"/>
+                <circle cx="150" cy="150" r="125" stroke-width="1" fill="none"/>
+                <text x="70" y="155" fill="red" class="svg-text">Click me!</text>
+            </svg>
+        </div>
+        <div class="generators-container">
+            <div class="generator grandpa">
+                <span class="display name">Name 1</span>
+                <span class="display price">234.15</span>
+                <span class="display quantity">4</span>
+                <span class="display generated">4</span>
+            </div>
+            <div class="generator grandpa" disabled>
+                <span class="display name">Name 3</span>
+                <span class="display price">22.7</span>
+                <span class="display quantity">20</span>
+                <span class="display generated">4</span>
             </div>
         </div>
-    <button class="button">Klik mnie</button>
     </section>
-
 </main>
 
 
