@@ -24,15 +24,17 @@ export function toggleVisibility(elem: HTMLElement, toggle: boolean) {
     }
 }
 
-export function createGeneratorElem(name: string, price: number, amount: number, className: string): HTMLElement {
+export function createGeneratorElem(name: string, price: number, amount: number, sum: number, className: string): HTMLElement {
     const div = document.createElement('div');
     div.classList.add('generator', className);
     div.appendChild(createSpan('name'));
     div.appendChild(createSpan('price'));
     div.appendChild(createSpan('quantity'));
+    div.appendChild(createSpan('generated'));
     addTextToChild('.name', name, div);
     addTextToChild('.price', price + '', div);
     addTextToChild('.quantity', amount + '', div);
+    addTextToChild('.generated', sum + '', div);
     toggleDisability(div, false);
     toggleVisibility(div, true);
     return div;
@@ -41,5 +43,6 @@ export function createGeneratorElem(name: string, price: number, amount: number,
 export function createSpan(name: string) {
     const span = document.createElement('span');
     span.classList.add(name);
+    span.classList.add('display');
     return span;
 }

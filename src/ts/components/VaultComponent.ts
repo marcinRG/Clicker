@@ -14,24 +14,6 @@ export class VaultComponent implements ISubscribe<any> {
     private subject: Subject<any> = new Subject<any>();
     private moneyEventObserver: Observer<MoneyChangeEvent>;
     private propertyEventObserver: Observer<ChangeEvent<any>>;
-    private handleMoneyEvent = (moneyEvent: MoneyChangeEvent) => {
-        if (moneyEvent instanceof MoneyChangeEvent) {
-            this.vault.add(moneyEvent.value);
-            if (this.htmlElem) {
-                addTextToChild('.value', this.vault.getValue() + '', this.htmlElem);
-            }
-            this.subject.next(new MoneyChangeEvent(this.vault.getValue()));
-        }
-    };
-    private handlePropertyChangeEvent = (propertyEvent: ChangeEvent<any>) => {
-        if (propertyEvent instanceof ChangeEvent
-            && propertyEvent.propertyName === 'ClicksPerSecond') {
-            if (this.htmlElem) {
-                addTextToChild('.per-second', propertyEvent.value + '', this.htmlElem);
-            }
-            this.vault.setGeneratedPerSecond(propertyEvent.value);
-        }
-    };
 
     constructor(elemQueryStr: string, value: number = 0, totalSum: number = 0, generatedPerSecond: number = 0) {
         this.vault = new Vault(value, totalSum, generatedPerSecond);
@@ -44,6 +26,10 @@ export class VaultComponent implements ISubscribe<any> {
 
     public addMoneyEventSource(source: ISubscribe<MoneyChangeEvent>) {
         source.subscribe(this.moneyEventObserver);
+    }
+
+    public addPropertyEventSource(source: ISubscribe<ChangeEvent<any>>) {
+        source.subscribe(this.propertyEventObserver);
     }
 
     public dumpProperties() {
@@ -63,7 +49,28 @@ export class VaultComponent implements ISubscribe<any> {
         if (elem) {
             this.htmlElem = <HTMLElement> elem;
             this.htmlElem.appendChild(createSpan('value'));
+            addTextToChild('.value', this.vault.getValue() + '', this.htmlElem)
             this.htmlElem.appendChild(createSpan('per-second'));
+            addTextToChild('.per-second', this.vault.getGeneratedPerSecond() + '', this.htmlElem)
+        }
+    }
+
+    private handleMoneyEvent = (moneyEvent: MoneyChangeEvent) => {
+        if (moneyEvent instanceof MoneyChangeEvent) {
+            this.vault.add(moneyEvent.value);
+            if (this.htmlElem) {
+                addTextToChild('.value', this.vault.getValue() + '', this.htmlElem);
+            }
+            this.subject.next(new MoneyChangeEvent(this.vault.getValue()));
+        }
+    }
+    private handlePropertyChangeEvent = (propertyEvent: ChangeEvent<any>) => {
+        if (propertyEvent instanceof ChangeEvent
+            && propertyEvent.propertyName === 'ClicksPerSec') {
+            if (this.htmlElem) {
+                addTextToChild('.per-second', propertyEvent.value + '', this.htmlElem);
+            }
+            this.vault.setGeneratedPerSecond(propertyEvent.value);
         }
     }
 }

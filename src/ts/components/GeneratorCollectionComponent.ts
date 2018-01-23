@@ -6,8 +6,10 @@ import {Observer} from 'rxjs/Observer';
 import {ChangeEvent} from '../model/events/ChangeEvent';
 import {Subject} from 'rxjs/Subject';
 import {createObserver} from '../utils/RxUtils';
+import {ISubscribe} from '../model/interfaces/ISubscribe';
+import {Observable} from 'rxjs/Observable';
 
-export class GeneratorCollectionComponent {
+export class GeneratorCollectionComponent implements ISubscribe<any> {
     private generatorsArray: GeneratorComponent[] = [];
     private htmlElement: HTMLElement;
     private mathUtils: IMathFunctions;
@@ -16,15 +18,6 @@ export class GeneratorCollectionComponent {
     private propertyChangeEventObserver: Observer<ChangeEvent<any>>;
     private subject: Subject<any> = new Subject<any>();
 
-    private handleChangeEvent = (event: ChangeEvent<any>) => {
-        if (event) {
-            if (event instanceof ChangeEvent && event.propertyName === 'GenPerSec') {
-                this.subject.next(new ChangeEvent('ClicksPerSec',
-                    this.calculateGeneratedPerSecond()));
-            }
-        }
-    };
-
     constructor(elemQueryStr: string) {
         const elem = <HTMLElement> document.querySelector(elemQueryStr);
         if (elem) {
@@ -32,6 +25,14 @@ export class GeneratorCollectionComponent {
             this.propertyChangeEventObserver = createObserver(this.handleChangeEvent,
                 'error in GeneratorCollectionComponent, propertyChangeEventObserver creator');
         }
+    }
+
+    public getObservable(): Observable<any> {
+        return this.subject;
+    }
+
+    public subscribe(observer: Observer<any>) {
+        this.subject.subscribe(observer);
     }
 
     public setMathUtils(mathUtils: IMathFunctions) {
@@ -49,6 +50,7 @@ export class GeneratorCollectionComponent {
     public setVault(vault: VaultComponent) {
         if (vault) {
             this.vault = vault;
+            this.vault.addPropertyEventSource(this);
         }
     }
 
@@ -64,7 +66,7 @@ export class GeneratorCollectionComponent {
     }
 
     public dumpProperties() {
-        let array = [];
+        const array = [];
         for (const elem of this.generatorsArray) {
             array.push(elem.dumpProperties());
         }
@@ -77,9 +79,18 @@ export class GeneratorCollectionComponent {
 
     private calculateGeneratedPerSecond(): number {
         let sum = 0;
-        for (let elem of this.generatorsArray) {
+        for (const elem of this.generatorsArray) {
             sum = sum + elem.getClickGenerator().getClicksPerSecond();
         }
         return sum;
+    }
+
+    private handleChangeEvent = (event: ChangeEvent<any>) => {
+        if (event) {
+            if (event instanceof ChangeEvent && event.propertyName === 'GenPerSec') {
+                this.subject.next(new ChangeEvent('ClicksPerSec',
+                    this.calculateGeneratedPerSecond()));
+            }
+        }
     }
 }

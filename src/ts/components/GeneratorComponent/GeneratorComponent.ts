@@ -17,11 +17,11 @@ export class GeneratorComponent implements ISubscribe<any> {
     constructor(name: string, price: number, amount: number, quantity: number,
                 frequency: number, sumGenerated: number, className: string) {
         this.generatorEventWrapper = new GeneratorEventWrapper(name, price, amount, quantity, frequency, sumGenerated);
-        this.generatorHTMLElement = new GeneratorHTMLElement(name, price, quantity, className);
+        this.generatorHTMLElement = new GeneratorHTMLElement(name, price, quantity, sumGenerated, className);
         this.generatorHTMLElement.addPropertyEventSource(this.generatorEventWrapper);
         this.generatorEventWrapper.addClickEventSource(this.generatorHTMLElement);
         this.generatorEventWrapper.subscribe(this.subject);
-        this.generatorEventWrapper.subscribe(this.subject);
+        this.generatorHTMLElement.subscribe(this.subject);
     }
 
     public setMathUtils(mathUtils: IMathFunctions) {
@@ -32,7 +32,7 @@ export class GeneratorComponent implements ISubscribe<any> {
         this.subject.subscribe(observer);
     }
 
-    getObservable(): Observable<any> {
+    public getObservable(): Observable<any> {
         return this.subject;
     }
 

@@ -10,52 +10,13 @@ import {ISubscribe} from '../../model/interfaces/ISubscribe';
 import {createObserver} from '../../utils/RxUtils';
 import 'rxjs/add/operator/filter';
 
-
 export class GeneratorHTMLElement implements ISubscribe<any> {
     private htmlElement: HTMLElement;
     private clickEventSource: Observable<any>;
     private propertyEventObserver: Observer<ChangeEvent<any>>;
-    private handlePropertyChange = (changeEvent: ChangeEvent<any>) => {
-        if (changeEvent && changeEvent instanceof ChangeEvent) {
-            this.handlePriceChange(changeEvent);
-            this.handleEnabledChange(changeEvent);
-            this.handleQuantityChange(changeEvent);
-            this.handleVisibleChange(changeEvent);
-        }
-    };
-    private handlePriceChange = (changeEvent: ChangeEvent<boolean>) => {
-        if (changeEvent.propertyName === 'Price') {
-            if (this.htmlElement) {
-                addTextToChild('.price', changeEvent.value + '', this.htmlElement);
-            }
-        }
-    };
-    private handleQuantityChange = (changeEvent: ChangeEvent<number>) => {
-        if (changeEvent.propertyName === 'Quantity') {
-            if (this.htmlElement) {
-                addTextToChild('.quantity', changeEvent.value + '', this.htmlElement);
-            }
-        }
-    };
-    private handleVisibleChange = (changeEvent: ChangeEvent<boolean>) => {
-        console.log('visible change');
-        if (changeEvent.propertyName === 'Visible') {
-            if (this.htmlElement) {
-                toggleVisibility(this.htmlElement, !changeEvent.value);
-            }
-        }
-    };
-    private handleEnabledChange = (propertyChangeEvent: ChangeEvent<boolean>) => {
-        console.log('enabled change');
-        if (propertyChangeEvent.propertyName === 'Enabled') {
-            if (this.htmlElement) {
-                toggleDisability(this.htmlElement, propertyChangeEvent.value);
-            }
-        }
-    };
 
-    constructor(name: string, price: number, quantity: number, private className: string) {
-        const elem = createGeneratorElem(name, price, quantity, this.className);
+    constructor(name: string, price: number, quantity: number, sum: number, private className: string) {
+        const elem = createGeneratorElem(name, price, quantity, sum, this.className);
         if (elem) {
             this.htmlElement = elem;
             this.clickEventSource = this.createMouseClickObservable();
@@ -90,6 +51,51 @@ export class GeneratorHTMLElement implements ISubscribe<any> {
                 return (new ChangeEvent<any>('Click', this.htmlElement));
             }
             return null;
-        }).filter(value => !!value);
+        }).filter((value) => !!value);
+    }
+
+    private handlePropertyChange = (changeEvent: ChangeEvent<any>) => {
+        if (changeEvent && changeEvent instanceof ChangeEvent) {
+            this.handlePriceChange(changeEvent);
+            this.handleEnabledChange(changeEvent);
+            this.handleQuantityChange(changeEvent);
+            this.handleVisibleChange(changeEvent);
+            this.handleSumChange(changeEvent);
+        }
+    }
+    private handlePriceChange = (changeEvent: ChangeEvent<boolean>) => {
+        if (changeEvent.propertyName === 'Price') {
+            if (this.htmlElement) {
+                addTextToChild('.price', changeEvent.value + '', this.htmlElement);
+            }
+        }
+    }
+    private handleQuantityChange = (changeEvent: ChangeEvent<number>) => {
+        if (changeEvent.propertyName === 'Quantity') {
+            if (this.htmlElement) {
+                addTextToChild('.quantity', changeEvent.value + '', this.htmlElement);
+            }
+        }
+    }
+    private handleVisibleChange = (changeEvent: ChangeEvent<boolean>) => {
+        if (changeEvent.propertyName === 'Visible') {
+            if (this.htmlElement) {
+                toggleVisibility(this.htmlElement, !changeEvent.value);
+            }
+        }
+    }
+    private handleEnabledChange = (propertyChangeEvent: ChangeEvent<boolean>) => {
+        if (propertyChangeEvent.propertyName === 'Enabled') {
+            if (this.htmlElement) {
+                toggleDisability(this.htmlElement, propertyChangeEvent.value);
+            }
+        }
+    }
+    private handleSumChange = (propertyChangeEvent: ChangeEvent<number>) => {
+        if (propertyChangeEvent.propertyName === 'Sum') {
+            if (this.htmlElement) {
+                addTextToChild('.generated', propertyChangeEvent.value + '', this.htmlElement);
+            }
+        }
     }
 }
