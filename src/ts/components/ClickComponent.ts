@@ -1,31 +1,31 @@
 import {Observable} from 'rxjs/Observable';
-
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/fromEvent';
 import {Observer} from 'rxjs/Observer';
 import {MoneyChangeEvent} from '../model/events/MoneyChangeEvent';
+import {ISubscribe} from '../model/interfaces/ISubscribe';
 
-export class ClickComponent {
+export class ClickComponent implements ISubscribe<MoneyChangeEvent> {
 
     private htmlElement: HTMLElement;
-    private clickSource: Observable<MoneyChangeEvent>;
+    private moneyEventSource: Observable<MoneyChangeEvent>;
 
     constructor(elemQueryStr: string) {
 
         const elem = <HTMLElement> document.querySelector(elemQueryStr);
         if (elem) {
             this.htmlElement = elem;
-            this.clickSource = Observable.fromEvent(this.htmlElement, 'click').map(() => {
+            this.moneyEventSource = Observable.fromEvent(this.htmlElement, 'click').map(() => {
                 return (new MoneyChangeEvent(1));
             });
         }
     }
 
     public getObservable(): Observable<MoneyChangeEvent> {
-        return this.clickSource;
+        return this.moneyEventSource;
     }
 
     public subscribe(observer: Observer<MoneyChangeEvent>) {
-        this.clickSource.subscribe(observer);
+        this.moneyEventSource.subscribe(observer);
     }
 }

@@ -11,4 +11,8 @@
   display: block;
 }
 
-
+@mixin disabled-elem {
+  pointer-events: none;
+  color: $color-grey;
+  background-color: #f1e1d7;
+}

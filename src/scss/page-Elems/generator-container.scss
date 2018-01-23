@@ -1,0 +1,60 @@
+@import '../common';
+@import '../mixins';
+
+.generators-container {
+  @include block-border-box;
+  user-select: none;
+  width: 50%;
+  height: 100%;
+  margin: 0 auto;
+  float: right;
+  background-color: $color2;
+  border-left: solid 1px $color3;
+  overflow-y: auto;
+}
+
+.generator {
+  @include block-border-box;
+  width: 100%;
+  background-color: $color2;
+  border-bottom: solid 1px $color3;
+  padding: .4em .2em;
+
+  &[disabled] {
+    @include disabled-elem;
+
+    .display {
+      @include disabled-elem;
+
+      &::before {
+        @include disabled-elem;
+      }
+    }
+  }
+
+  .display {
+    @include lobster-font;
+    background-color: $color2;
+    color: $color3;
+    font-size: 1.5em;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .name {
+    @include before-elem($color1, 'name:', .5em);
+  }
+
+  .price {
+    @include before-elem($color1, 'price:', .5em);
+  }
+
+  .quantity {
+    @include before-elem($color1, 'quantity:', .5em);
+  }
+
+  .generated {
+    @include before-elem($color1, 'generated:', .5em);
+  }
+
+}

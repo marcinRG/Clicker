@@ -3,15 +3,16 @@ import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/map';
+import {ISubscribe} from '../model/interfaces/ISubscribe';
 
-export class Timer {
+export class Timer implements ISubscribe<TimeChangeEvent> {
     private timeGenerator: Observable<TimeChangeEvent>;
 
     constructor() {
-        const timeGenerator = Observable.interval(1000);
-        this.timeGenerator = timeGenerator.map((value) => {
-            return new TimeChangeEvent(value);
-        });
+        this.timeGenerator = Observable.interval(1000)
+            .map((value) => {
+                return new TimeChangeEvent(value);
+            });
     }
 
     public getObservable(): Observable<TimeChangeEvent> {

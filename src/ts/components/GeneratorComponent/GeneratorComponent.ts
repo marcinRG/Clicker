@@ -2,30 +2,26 @@ import {Observer} from 'rxjs/Observer';
 import {GeneratorEventWrapper} from './GeneratorEventWrapper';
 import {GeneratorHTMLElement} from './GeneratorHTMLElement';
 import {IMathFunctions} from '../../model/interfaces/IMathFunctions';
+import {ISubscribe} from '../../model/interfaces/ISubscribe';
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
+import {VaultComponent} from '../VaultComponent';
+import {Timer} from '../Timer';
 
-export class GeneratorComponent implements Observer<any> {
+export class GeneratorComponent implements ISubscribe<any> {
+
     private generatorEventWrapper: GeneratorEventWrapper;
     private generatorHTMLElement: GeneratorHTMLElement;
+    private subject: Subject<any> = new Subject();
 
     constructor(name: string, price: number, amount: number, quantity: number,
                 frequency: number, sumGenerated: number, className: string) {
         this.generatorEventWrapper = new GeneratorEventWrapper(name, price, amount, quantity, frequency, sumGenerated);
         this.generatorHTMLElement = new GeneratorHTMLElement(name, price, quantity, className);
-        this.generatorEventWrapper.subscribe(this.generatorHTMLElement);
-        this.generatorHTMLElement.subscribe(this.generatorEventWrapper);
-    }
-
-    public next(value: any) {
-        this.generatorEventWrapper.next(value);
-        this.generatorHTMLElement.next(value);
-    }
-
-    public error(err: any) {
-        console.log('error' + err);
-    }
-
-    public complete() {
-        console.log('completed');
+        this.generatorHTMLElement.addPropertyEventSource(this.generatorEventWrapper);
+        this.generatorEventWrapper.addClickEventSource(this.generatorHTMLElement);
+        this.generatorEventWrapper.subscribe(this.subject);
+        this.generatorEventWrapper.subscribe(this.subject);
     }
 
     public setMathUtils(mathUtils: IMathFunctions) {
@@ -33,8 +29,20 @@ export class GeneratorComponent implements Observer<any> {
     }
 
     public subscribe(observer: Observer<any>) {
-        this.generatorEventWrapper.subscribe(observer);
-        this.generatorHTMLElement.subscribe(observer);
+        this.subject.subscribe(observer);
+    }
+
+    getObservable(): Observable<any> {
+        return this.subject;
+    }
+
+    public addVault(vault: VaultComponent) {
+        this.generatorEventWrapper.addMoneyEventSource(vault);
+        vault.addMoneyEventSource(this.generatorEventWrapper);
+    }
+
+    public addTimer(timer: Timer) {
+        this.generatorEventWrapper.addTimeEventSource(timer);
     }
 
     public getClickGenerator() {
