@@ -24,6 +24,7 @@
     text-align: center;
     margin: auto;
     background-color: $color3;
+    user-select: none;
   }
 
   .value {
@@ -36,15 +37,22 @@
 }
 
 .svg-img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: $color2;
+  display: inline-block;
+  margin-top: 5em;
+  background-color: transparent;
+  cursor: pointer;
+  width: 300px;
+  height: 300px;
 
-  circle {
-    stroke: $color3;
+  &:active {
+    transition-duration: .15s;
+    transform: scale(.98, .98);
   }
+}
+
+.circle {
+  stroke: $color3;
+  fill: none;
 }
 
 .svg-text {

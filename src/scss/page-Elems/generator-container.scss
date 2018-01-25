@@ -19,9 +19,11 @@
   background-color: $color2;
   border-bottom: solid 1px $color3;
   padding: .4em .2em;
+  cursor: pointer;
 
   &[disabled] {
-    @include disabled-elem;
+    cursor: not-allowed;
+    background-color: #f1e1d7;
 
     .display {
       @include disabled-elem;

@@ -36,7 +36,7 @@ export function createGeneratorElem(name: string, price: number, amount: number,
     addTextToChild('.quantity', amount + '', div);
     addTextToChild('.generated', sum + '', div);
     toggleDisability(div, false);
-    toggleVisibility(div, true);
+    toggleVisibility(div, !(amount > 0));
     return div;
 }
 
