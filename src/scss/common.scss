@@ -20,15 +20,32 @@
   }
 }
 
-*,
-html,
 body {
   @include set-to-zero;
   background-color: $color1;
 }
 
+div {
+  .noty_body {
+    @include overpass-font;
+    background-color: $color4;
+    color: $color3;
+    border: 1px solid $color3;
+    text-align: center;
+  }
+}
+
 .app {
-  width: 75%;
+  width: 95%;
   margin: 0 auto;
   height: 100vh;
+
+  @media screen {
+
+    @media (min-width: $media-br-1) {
+      width: 75%;
+    }
+  }
+
 }
+

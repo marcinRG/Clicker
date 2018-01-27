@@ -21,7 +21,11 @@ class SaveService {
                 (this.generatorCollection && this.generatorCollection.dumpProperties)) {
                 storageService.save(this.vault, this.generatorCollection).then(() => {
                     new Noty({
+                        type: 'info',
                         text: 'Saved to local storage',
+                        timeout: 6000,
+                        progressBar: false,
+                        layout: 'bottomCenter'
                     }).show();
                 }, () => {
                     console.log('error occured while saving to localstorage');
