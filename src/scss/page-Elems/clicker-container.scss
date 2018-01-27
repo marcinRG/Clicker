@@ -1,0 +1,88 @@
+@import '../common';
+@import '../mixins';
+
+.clicker-container {
+  width: 100%;
+  float: left;
+  height: 100%;
+  background-color: $color2;
+  position: relative;
+  text-align: center;
+
+  @media screen {
+
+    @media (min-width: $media-br-1) {
+      width: 50%;
+    }
+  }
+
+}
+
+.vault {
+  @include lobster-font;
+  width: 100%;
+  margin: 1.5em auto;
+  font-size: 1.2em;
+  padding: .5em 0;
+  color: $color2;
+  background-color: $color3;
+
+  @media screen {
+    @media (min-width: $media-br-1) {
+      font-size: 2em;
+    }
+  }
+
+  .display {
+    @include block-border-box;
+    text-align: center;
+    margin: auto;
+    background-color: $color3;
+    user-select: none;
+  }
+
+  .value {
+    @include before-elem($color4, 'clicks:', .3em);
+  }
+
+  .per-second {
+    @include before-elem($color4, 'clicks/sec:', .3em);
+  }
+}
+
+.svg-img {
+  display: inline-block;
+  margin-top: 3em;
+  background-color: transparent;
+  cursor: pointer;
+  width: 150px;
+  height: 150px;
+
+  &:active {
+    transition-duration: .15s;
+    transform: scale(.98, .98);
+  }
+
+  @media screen {
+
+    @media (min-width: $media-br-1) {
+      margin-top: 5em;
+      width: 300px;
+      height: 300px;
+    }
+  }
+
+
+}
+
+.circle {
+  stroke: $color3;
+  fill: none;
+}
+
+.svg-text {
+  @include lobster-font;
+  user-select: none;
+  fill: $color3;
+  font-size: 45px;
+}

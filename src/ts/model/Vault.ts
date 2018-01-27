@@ -7,6 +7,10 @@ export class Vault {
         this.generatedPerSecond = val;
     }
 
+    public getGeneratedPerSecond(): number {
+        return this.generatedPerSecond;
+    }
+
     public add(amount: number) {
         if (amount > 0) {
             this.totalSum = this.totalSum + amount;
@@ -32,6 +36,6 @@ export class Vault {
             value: this.value,
             totalSum: this.totalSum,
             generatedPerSecond: this.generatedPerSecond
-        }
+        };
     }
 }

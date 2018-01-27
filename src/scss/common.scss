@@ -1,7 +1,51 @@
 @import 'mixins';
+@import 'variables';
 
-*,
-html,
+@mixin lobster-font {
+  font-family: 'Lobster', cursive;
+}
+
+@mixin overpass-font {
+  font-family: 'Overpass Mono', monospace;
+}
+
+@mixin before-elem($color, $content, $font-size) {
+  &::before {
+    @include overpass-font;
+    font-weight: 100;
+    padding: 0 1em;
+    color: $color;
+    content: $content;
+    font-size: $font-size;
+  }
+}
+
 body {
   @include set-to-zero;
+  background-color: $color1;
 }
+
+div {
+  .noty_body {
+    @include overpass-font;
+    background-color: $color4;
+    color: $color3;
+    border: 1px solid $color3;
+    text-align: center;
+  }
+}
+
+.app {
+  width: 95%;
+  margin: 0 auto;
+  height: 100vh;
+
+  @media screen {
+
+    @media (min-width: $media-br-1) {
+      width: 75%;
+    }
+  }
+
+}
+

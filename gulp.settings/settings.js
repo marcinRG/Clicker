@@ -21,7 +21,7 @@ var paths = {
     compiledTS: devFolder + 'bundle.ts',
     fontsSrc: devFolder + 'fonts/**/*.*',
     imageSrc: devFolder + 'images/**/*.*',
-    scssStyles: [sassFolder + '**/*.scss'],
+    scssStyles: [sassFolder + '**/*.scss','!' + sassFolder + 'libs/' + '**/*.scss'],
     scssFile: sassFolder + 'style.scss',
     cssStyles: cssFolder,
     cssFile: cssFolder + 'style.css',

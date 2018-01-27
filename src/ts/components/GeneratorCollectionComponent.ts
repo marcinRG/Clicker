@@ -1,39 +1,38 @@
-import {IMathFunctions} from '../model/interfaces/IMathFunctions';
 import {GeneratorComponent} from './GeneratorComponent/GeneratorComponent';
+import {IMathFunctions} from '../model/interfaces/IMathFunctions';
+import {Timer} from './Timer';
 import {VaultComponent} from './VaultComponent';
-import {PropertyChangeEvent} from '../model/events/PropertyChangeEvent';
 import {Observer} from 'rxjs/Observer';
+import {ChangeEvent} from '../model/events/ChangeEvent';
 import {Subject} from 'rxjs/Subject';
 import {createObserver} from '../utils/RxUtils';
-import {Timer} from '../services/timer.service';
+import {ISubscribe} from '../model/interfaces/ISubscribe';
+import {Observable} from 'rxjs/Observable';
 
-export class GeneratorComponentCollection {
-
+export class GeneratorCollectionComponent implements ISubscribe<any> {
+    private generatorsArray: GeneratorComponent[] = [];
+    private htmlElement: HTMLElement;
     private mathUtils: IMathFunctions;
     private timer: Timer;
     private vault: VaultComponent;
-    private generatorsArray: GeneratorComponent[] = [];
-    private htmlElement: HTMLElement;
-    private propertyChangeEventObserver: Observer<PropertyChangeEvent<any>>;
+    private propertyChangeEventObserver: Observer<ChangeEvent<any>>;
     private subject: Subject<any> = new Subject<any>();
-
-    private nextPropertyChangeEvent = (event: PropertyChangeEvent<any>) => {
-        if (event) {
-            if (event instanceof PropertyChangeEvent && event.propertyName === 'genPerSec') {
-                this.subject.next(new PropertyChangeEvent('clicksPerSecond',
-                    this.calculateGeneratedPerSecond()));
-            }
-        }
-    };
 
     constructor(elemQueryStr: string) {
         const elem = <HTMLElement> document.querySelector(elemQueryStr);
         if (elem) {
             this.htmlElement = elem;
+            this.propertyChangeEventObserver = createObserver(this.handleChangeEvent,
+                'error in GeneratorCollectionComponent, propertyChangeEventObserver creator');
         }
+    }
 
-        this.propertyChangeEventObserver = createObserver(this.nextPropertyChangeEvent,
-            'error in GeneratorComponentCollection, propertyChangeEventObserver creator');
+    public getObservable(): Observable<any> {
+        return this.subject;
+    }
+
+    public subscribe(observer: Observer<any>) {
+        this.subject.subscribe(observer);
     }
 
     public setMathUtils(mathUtils: IMathFunctions) {
@@ -51,7 +50,7 @@ export class GeneratorComponentCollection {
     public setVault(vault: VaultComponent) {
         if (vault) {
             this.vault = vault;
-            vault.addPropertySource(this.subject);
+            this.vault.addPropertyEventSource(this);
         }
     }
 
@@ -67,22 +66,31 @@ export class GeneratorComponentCollection {
     }
 
     public dumpProperties() {
-        let array = [];
+        const array = [];
         for (const elem of this.generatorsArray) {
             array.push(elem.dumpProperties());
         }
         return array;
     }
 
+    private addToHTML(element: HTMLElement) {
+        this.htmlElement.appendChild(element);
+    }
+
     private calculateGeneratedPerSecond(): number {
         let sum = 0;
-        for (let elem of this.generatorsArray) {
+        for (const elem of this.generatorsArray) {
             sum = sum + elem.getClickGenerator().getClicksPerSecond();
         }
         return sum;
     }
 
-    private addToHTML(element: HTMLElement) {
-        this.htmlElement.appendChild(element);
+    private handleChangeEvent = (event: ChangeEvent<any>) => {
+        if (event) {
+            if (event instanceof ChangeEvent && event.propertyName === 'GenPerSec') {
+                this.subject.next(new ChangeEvent('ClicksPerSec',
+                    this.calculateGeneratedPerSecond()));
+            }
+        }
     }
 }

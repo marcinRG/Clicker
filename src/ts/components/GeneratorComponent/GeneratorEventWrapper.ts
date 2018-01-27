@@ -1,92 +1,90 @@
 import {Observer} from 'rxjs/Observer';
 import {Subject} from 'rxjs/Subject';
-import {TimeEvent} from '../../model/events/TimeEvent';
-import {MoneyEvent} from '../../model/events/MoneyEvent';
 import {ClickGenerator} from '../../model/ClickGenerator';
-import {PropertyChangeEvent} from '../../model/events/PropertyChangeEvent';
-import {Event} from '../../model/events/Event';
-import {Observable} from 'rxjs/Observable';
-import {ISubscribe} from '../../model/interfaces/ISubscribe';
+import {TimeChangeEvent} from '../../model/events/TimeChangeEvent';
+import {MoneyChangeEvent} from '../../model/events/MoneyChangeEvent';
+import {ChangeEvent} from '../../model/events/ChangeEvent';
 import {IMathFunctions} from '../../model/interfaces/IMathFunctions';
+import {ISubscribe} from '../../model/interfaces/ISubscribe';
+import {Observable} from 'rxjs/Observable';
 import {createObserver, filterTimeEvents} from '../../utils/RxUtils';
 
 export class GeneratorEventWrapper implements ISubscribe<any> {
-
-    private eventObserver: Observer<Event<any>>;
-    private timeEventObserver: Observer<TimeEvent>;
-    private moneyEventObserver: Observer<MoneyEvent>;
     private clickGenerator: ClickGenerator;
-    private subject: Subject<any> = new Subject();
+    private timeEventObserver: Observer<TimeChangeEvent>;
+    private moneyEventObserver: Observer<MoneyChangeEvent>;
+    private clickEventObserver: Observer<ChangeEvent<any>>;
+    private subject: Subject<any> = new Subject<any>();
 
-    private nextTimeEvent = (e: TimeEvent) => {
-        if (e) {
-            if (this.clickGenerator.getQuantity() > 0) {
-                this.subject.next(new MoneyEvent(this.clickGenerator.getClicks()));
-                this.subject.next(new PropertyChangeEvent('sum', this.clickGenerator.getSum()));
-            }
-        }
-    };
-
-    private nextMoneyEvent = (e: MoneyEvent) => {
-        if (e) {
-            if (this.clickGenerator.canChangeVisible(e.amount)) {
-                this.clickGenerator.setVisible();
-                this.subject.next(new PropertyChangeEvent('visible', this.clickGenerator.getVisible()));
-            }
-            if (this.clickGenerator.canChangeEnabled(e.amount)) {
-                const enabledState = this.clickGenerator.changeEnabled();
-                this.subject.next(new PropertyChangeEvent('enabled', enabledState));
-            }
-        }
-    };
-
-    private nextEvent = (e: Event<any>) => {
-        if (e && e.name === 'click') {
-            const oldPrice = this.clickGenerator.increaseQuantityByOne();
-            this.subject.next(new MoneyEvent(-1 * oldPrice));
-            this.subject.next(new PropertyChangeEvent('price', this.clickGenerator.getPrice()));
-            this.subject.next(new PropertyChangeEvent('quantity', this.clickGenerator.getQuantity()));
-            this.subject.next(new PropertyChangeEvent('genPerSec', this.clickGenerator.getClicksPerSecond()));
-        }
-    };
-
-    constructor(name: string, price: number, amount: number, quantity: number, frequency: number, sumGenerated: number) {
+    constructor(name: string, price: number, amount: number, quantity: number,
+                frequency: number, sumGenerated: number) {
         this.clickGenerator = new ClickGenerator(name, price, amount, quantity, frequency, sumGenerated);
-        this.timeEventObserver = createObserver<TimeEvent>(this.nextTimeEvent,
+        this.timeEventObserver = createObserver<TimeChangeEvent>(this.handleTimeEvent,
             'error in GeneratorEventWrapper, timeEventObserver creator');
-        this.moneyEventObserver = createObserver<MoneyEvent>(this.nextMoneyEvent,
+        this.moneyEventObserver = createObserver<MoneyChangeEvent>(this.handleMoneyEvent,
             'error in GeneratorEventWrapper, moneyEventObserver creator');
-        this.eventObserver = createObserver<Event<any>>(this.nextEvent,
-            'error in GeneratorEventWrapper, eventObserver creator');
+        this.clickEventObserver = createObserver<ChangeEvent<any>>(this.handleClickEvent,
+            'error in GeneratorEventWrapper, clickEventObserver creator');
+    }
+
+    public addTimeEventSource(source: ISubscribe<TimeChangeEvent>) {
+        const filteredTimer = filterTimeEvents(source.getObservable(), this.getClickGenerator().getFrequency());
+        filteredTimer.subscribe(this.timeEventObserver);
+    }
+
+    public addMoneyEventSource(source: ISubscribe<MoneyChangeEvent>) {
+        source.subscribe(this.moneyEventObserver);
+    }
+
+    public addClickEventSource(source: ISubscribe<ChangeEvent<any>>) {
+        source.subscribe(this.clickEventObserver);
     }
 
     public getClickGenerator() {
         return this.clickGenerator;
     }
 
-    public addMathUtils(mathUtils: IMathFunctions) {
-        this.clickGenerator.setMathUtils(mathUtils);
-    }
-
-    public subscribe(obj: Observer<any>) {
-        this.subject.subscribe(obj);
-    }
-
     public getObservable(): Observable<any> {
         return this.subject;
     }
 
-    public addTimer(timer: ISubscribe<TimeEvent>) {
-        const observable: Observable<TimeEvent> = timer.getObservable();
-        filterTimeEvents(observable, this.clickGenerator.getFrequency()).subscribe(this.timeEventObserver);
+    public subscribe(observer: Observer<any>) {
+        this.subject.subscribe(observer);
     }
 
-    public addEventElem(eventElem: Observable<Event<any>>) {
-        eventElem.subscribe(this.eventObserver);
+    public addMathUtils(mathUtils: IMathFunctions) {
+        this.clickGenerator.setMathUtils(mathUtils);
     }
 
-    public addMoneyEvent(moneyEvent: ISubscribe<MoneyEvent>) {
-        const observable:Observable<MoneyEvent> = moneyEvent.getObservable();
-        observable.subscribe(this.moneyEventObserver);
+    private handleTimeEvent = (timeEvent: TimeChangeEvent) => {
+        if (timeEvent instanceof TimeChangeEvent) {
+            if (this.clickGenerator.getQuantity() > 0) {
+                this.subject.next(new MoneyChangeEvent(this.clickGenerator.getClicks()));
+                this.subject.next(new ChangeEvent('Sum', this.clickGenerator.getSum()));
+            }
+        }
+    }
+
+    private handleMoneyEvent = (moneyEvent: MoneyChangeEvent) => {
+        if (moneyEvent instanceof MoneyChangeEvent) {
+            if (this.clickGenerator.canChangeVisible(moneyEvent.value)) {
+                this.clickGenerator.setVisible();
+                this.subject.next(new ChangeEvent<boolean>('Visible', this.clickGenerator.getVisible()));
+            }
+            if (this.clickGenerator.canChangeEnabled(moneyEvent.value)) {
+                const enabledState = this.clickGenerator.changeEnabled();
+                this.subject.next(new ChangeEvent<boolean>('Enabled', enabledState));
+            }
+        }
+    }
+
+    private handleClickEvent = (clickEvent: ChangeEvent<any>) => {
+        if (clickEvent.propertyName === 'Click') {
+            const oldPrice = this.clickGenerator.increaseQuantityByOne();
+            this.subject.next(new MoneyChangeEvent(-1 * oldPrice));
+            this.subject.next(new ChangeEvent('Price', this.clickGenerator.getPrice()));
+            this.subject.next(new ChangeEvent('Quantity', this.clickGenerator.getQuantity()));
+            this.subject.next(new ChangeEvent('GenPerSec', this.clickGenerator.getClicksPerSecond()));
+        }
     }
 }
