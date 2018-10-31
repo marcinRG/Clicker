@@ -15,24 +15,6 @@ class SaveService {
     private generatorCollection: GeneratorCollectionComponent;
     private timeEventObserver: Observer<TimeChangeEvent>;
     private saveAfter: number = 60;
-    private nextTimeEvent = (timeEvent: TimeChangeEvent) => {
-        if (timeEvent) {
-            if ((this.vault && this.vault.dumpProperties) &&
-                (this.generatorCollection && this.generatorCollection.dumpProperties)) {
-                storageService.save(this.vault, this.generatorCollection).then(() => {
-                    new Noty({
-                        type: 'info',
-                        text: 'Saved to local storage',
-                        timeout: 6000,
-                        progressBar: false,
-                        layout: 'bottomCenter'
-                    }).show();
-                }, () => {
-                    console.log('error occured while saving to localstorage');
-                });
-            }
-        }
-    }
 
     constructor() {
         this.timeEventObserver = createObserver<TimeChangeEvent>(this.nextTimeEvent,
@@ -46,6 +28,25 @@ class SaveService {
 
     public setGeneratorCollection(generatorCollection: GeneratorCollectionComponent) {
         this.generatorCollection = generatorCollection;
+    }
+
+    private nextTimeEvent = (timeEvent: TimeChangeEvent) => {
+        if (timeEvent) {
+            if ((this.vault && this.vault.dumpProperties) &&
+                (this.generatorCollection && this.generatorCollection.dumpProperties)) {
+                storageService.save(this.vault, this.generatorCollection).then(() => {
+                    new Noty({
+                        type: 'info',
+                        text: 'Saved to local storage',
+                        timeout: 6000,
+                        progressBar: false,
+                        layout: 'bottomCenter',
+                    }).show();
+                }, () => {
+                    console.log('error occured while saving to localstorage');
+                });
+            }
+        }
     }
 
     private addTimer(timer: ISubscribe<TimeChangeEvent>) {

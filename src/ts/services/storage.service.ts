@@ -1,6 +1,6 @@
 import * as Promise from 'bluebird';
 import {AppSettings} from '../settings/AppSettings';
-import * as localForage from "localforage";
+import * as localForage from 'localforage';
 import {VaultComponent} from '../components/VaultComponent';
 import {GeneratorCollectionComponent} from '../components/GeneratorCollectionComponent';
 

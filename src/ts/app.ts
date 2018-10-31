@@ -13,7 +13,10 @@ const generatorCollection: GeneratorCollectionComponent = new GeneratorCollectio
 generatorCollection.setTimer(timerService);
 generatorCollection.setMathUtils(mathUtilsService);
 
-storageService.config().then(storageService.read).then((val) => {
+storageService.config().then(() => {
+    return storageService.read();
+    }).then((val) => {
+    console.log('success');
     const {value, totalSum, generatedPerSecond} = val[0];
     vault = new VaultComponent('.vault', value, totalSum, generatedPerSecond);
     generatorCollection.setVault(vault);
@@ -21,6 +24,7 @@ storageService.config().then(storageService.read).then((val) => {
     vault.addMoneyEventSource(click);
     initializeSaveService(vault, generatorCollection);
 }, () => {
+    console.log('failure');
     initializeWithDefault();
     initializeSaveService(vault, generatorCollection);
 });
@@ -53,4 +57,3 @@ const initializeWithDefault = () => {
     generatorCollection.addComponent(new GeneratorComponent('tokamak', 130000, 260, 0,
         1, 0, 'tokamak'));
 };
-

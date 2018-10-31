@@ -43,6 +43,7 @@ gulp.task('sass-compile', ['lint-sass'], function () {
     return gulp.src(settings.app.scssFile)
         .pipe(sassImportOnce())
         .pipe($.sass().on('error', $.sass.logError))
+        .pipe($.autoprefixer({browsers: ['last 3 version', '> 3%']}))
         .pipe(gulp.dest(settings.app.cssStyles));
 });
 
@@ -65,7 +66,7 @@ gulp.task('browserify-inject-js', ['browserify-compil'], function () {
 gulp.task('build-prepare', ['browserify-inject-js', 'inject-css'], function () {
 });
 
-gulp.task('dist-optimize', ['build-prepare', 'copyToBuild-fonts', 'test-run'], function () {
+gulp.task('dist-optimize', ['build-prepare', 'copyToBuild-fonts'], function () {
     var cleanCss = require('gulp-clean-css');
     return gulp.src(settings.app.index)
         .pipe($.plumber())

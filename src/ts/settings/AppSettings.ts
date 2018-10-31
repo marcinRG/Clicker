@@ -7,6 +7,6 @@ export class AppSettings {
         version: 1.0,
         size: 4980736,
         storeName: 'baza_Clicker',
-        description: 'baza lokalna apki Clicker'
+        description: 'baza lokalna apki Clicker',
     };
 }
