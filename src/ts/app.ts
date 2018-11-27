@@ -15,16 +15,18 @@ generatorCollection.setMathUtils(mathUtilsService);
 
 storageService.config().then(() => {
     return storageService.read();
-    }).then((val) => {
-    console.log('success');
-    const {value, totalSum, generatedPerSecond} = val[0];
-    vault = new VaultComponent('.vault', value, totalSum, generatedPerSecond);
-    generatorCollection.setVault(vault);
-    addGeneratorCollection(val[1], generatorCollection);
-    vault.addMoneyEventSource(click);
+}).then((val) => {
+    if (val[0] && val[1]) {
+        const {value, totalSum, generatedPerSecond} = val[0];
+        vault = new VaultComponent('.vault', value, totalSum, generatedPerSecond);
+        generatorCollection.setVault(vault);
+        addGeneratorCollection(val[1], generatorCollection);
+        vault.addMoneyEventSource(click);
+    } else {
+        initializeWithDefault();
+    }
     initializeSaveService(vault, generatorCollection);
 }, () => {
-    console.log('failure');
     initializeWithDefault();
     initializeSaveService(vault, generatorCollection);
 });

@@ -1,5 +1,0 @@
-TODO
--add initialize event,
--simplify events
--streamline event handling in components
--styles

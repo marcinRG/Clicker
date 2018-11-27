@@ -1,8 +1,10 @@
 # Cliker
-Clicker game
-## commands:
+Simple implementation of Cookie Clicker game
+
+
+##commands:
 
 *  **npm install** - to install all dependencies
 *  **npm test** - to run all tests
-*  **npm run** - to run app on local machine
+*  **npm run run-local** - to run app on local machine
 
